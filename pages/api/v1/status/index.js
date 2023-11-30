@@ -4,8 +4,9 @@ async function status(request, response) {
   try {
     const updatedAt = new Date().toISOString();
 
-    const resultQueryVersionDataBase =
-      await database.query("SELECT version();");
+    const resultQueryVersionDataBase = await database.query(
+      "SELECT split_part(version(), ' ', 2)",
+    );
 
     const resultMaxConnectionsDataBase = await database.query(
       "SHOW max_connections;",
