@@ -26,16 +26,35 @@ test("GET to /api/v1/status should return property database", async () => {
   const response = await fetch("http://localhost:3000/api/v1/status");
 
   const responseBody = await response.json();
-
-  expect(responseBody.database).toBeDefined();
+  expect(responseBody).toHaveProperty("database");
 });
 
-test("GET to /api/v1/status should return property database e version, max_connections and connectionsUseds ", async () => {
+test("GET to /api/v1/status should return property database.version", async () => {
   const response = await fetch("http://localhost:3000/api/v1/status");
 
-  const responseBody = await response.json();
+  const { database } = await response.json();
 
-  expect(responseBody.database.version).toBeDefined();
-  expect(responseBody.database.max_connections).toBeDefined();
-  expect(responseBody.database.count_connections).toBeDefined();
+  expect(database).toHaveProperty("version");
+  expect(typeof database.version).toBe("number");
+});
+
+test("GET to /api/v1/status should return property database.max_connections", async () => {
+  const response = await fetch("http://localhost:3000/api/v1/status");
+
+  const { database } = await response.json();
+
+  expect(database).toHaveProperty("max_connections");
+  expect(typeof database.max_connections).toBe("number");
+});
+
+test("GET to /api/v1/status should return property database.count_connections", async () => {
+  const response = await fetch("http://localhost:3000/api/v1/status");
+
+  const { database } = await response.json();
+
+  expect(database).toHaveProperty("count_connections");
+  expect(typeof database.count_connections).toBe("number");
+  expect(database.count_connections).toBeLessThanOrEqual(
+    database.max_connections,
+  );
 });
