@@ -5,7 +5,7 @@ async function status(request, response) {
     const updatedAt = new Date().toISOString();
 
     const resultQueryVersionDataBase = await database.query(
-      "SELECT split_part(version(), ' ', 2)",
+      "SELECT split_part(version(), ' ', 2) as version",
     );
 
     const resultMaxConnectionsDataBase = await database.query(
@@ -18,10 +18,13 @@ async function status(request, response) {
     response.status(200).json({
       updated_at: updatedAt,
       database: {
-        version: resultQueryVersionDataBase.rows[0].version,
-        max_connections: resultMaxConnectionsDataBase.rows[0].max_connections,
-        count_connections:
+        version: parseFloat(resultQueryVersionDataBase.rows[0].version),
+        max_connections: new Number(
+          resultMaxConnectionsDataBase.rows[0].max_connections,
+        ),
+        count_connections: new Number(
           resultCountConnectionsDataBase.rows[0].count_connections,
+        ),
       },
     });
   } catch (error) {
