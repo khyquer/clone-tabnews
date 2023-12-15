@@ -55,6 +55,7 @@ test("GET to /api/v1/status should return property database.count_connections", 
 
   expect(dependencies.database).toHaveProperty("count_connections");
   expect(typeof dependencies.database.count_connections).toBe("number");
+  expect(dependencies.database.count_connections).toBe(1);
   expect(dependencies.database.count_connections).toBeLessThanOrEqual(
     dependencies.database.max_connections,
   );

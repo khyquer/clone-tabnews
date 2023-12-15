@@ -7,21 +7,23 @@ async function status(request, response) {
     const queryVersionDataBaseResult = await database.query(
       "SHOW server_version;",
     );
-    queryVersionDataBaseValue = parseInt(queryVersionDataBaseResult.rows[0]);
+    const queryVersionDataBaseValue = parseInt(
+      queryVersionDataBaseResult.rows[0].server_version,
+    );
 
     const maxConnectionsDataBaseResult = await database.query(
       "SHOW max_connections;",
     );
-    maxConnectionsDataBaseValue = parseInt(
-      maxConnectionsDataBaseResult.rows[0],
+
+    const maxConnectionsDataBaseValue = parseInt(
+      maxConnectionsDataBaseResult.rows[0].max_connections,
     );
 
     const rountConnectionsDataBaseResult = await database.query(
-      "SELECT count(*) as count_connections FROM pg_stat_activity;",
+      "SELECT count(*)::int as count_connections FROM pg_stat_activity;",
     );
-    rountConnectionsDataBaseValue = parseInt(
-      rountConnectionsDataBaseResult.rows[0],
-    );
+    const rountConnectionsDataBaseValue =
+      rountConnectionsDataBaseResult.rows[0].count_connections;
 
     response.status(200).json({
       updated_at: updatedAt,
