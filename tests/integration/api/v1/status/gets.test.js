@@ -36,7 +36,7 @@ test("GET to /api/v1/status should return property database.version", async () =
   const { dependencies } = await response.json();
 
   expect(dependencies.database).toHaveProperty("version");
-  expect(typeof dependencies.database.version).toBe("string");
+  expect(typeof dependencies.database.version).toBe("number");
 });
 
 test("GET to /api/v1/status should return property database.max_connections", async () => {

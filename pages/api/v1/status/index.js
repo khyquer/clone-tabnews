@@ -23,7 +23,7 @@ async function status(request, response) {
 
     const rountConnectionsDataBaseResult = await database.query({
       text: "SELECT count(*)::int as count_connections FROM pg_stat_activity where datname = $1",
-      values: databaseName,
+      values: [databaseName],
     });
     const rountConnectionsDataBaseValue =
       rountConnectionsDataBaseResult.rows[0].count_connections;
