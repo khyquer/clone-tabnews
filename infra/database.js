@@ -9,7 +9,7 @@ async function query(queryObject) {
     password: process.env.POSTGRES_PASSWORD,
     max: 500,
     idleTimeoutMillis: 2000,
-    ssl: process.env.NODE_ENV === 'development' ? false : true,
+    ssl: process.env.NODE_ENV === 'production' ? true : false,
   });
 
   try {
@@ -17,7 +17,6 @@ async function query(queryObject) {
     const result = await client.query(queryObject);
     return result;
   } catch (error) {
-    console.error(error);
     throw error;
   } finally {
     await client.end();
