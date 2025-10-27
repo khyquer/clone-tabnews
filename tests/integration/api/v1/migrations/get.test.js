@@ -25,3 +25,4 @@ test("GET to /api/v1/migrations should return 200", async () => {
   expect(responseRown.name).toBeDefined();
   expect(responseRown.timestamp).toBeDefined();
 });
+
