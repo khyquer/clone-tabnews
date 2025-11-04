@@ -36,6 +36,7 @@ async function status(request, response) {
           max_connections: maxConnectionsDataBaseValue,
           count_connections: rountConnectionsDataBaseValue,
         },
+        applications: {}
       },
     });
   } catch (error) {
