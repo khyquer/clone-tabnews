@@ -12,7 +12,7 @@
     "lint:fix": "prettier --write .",
     "test": "jest --runInBand",
     "test:watch": "jest --watchAll --runInBand",
-    "migration:create": "node-pg-migrate --migrations-dir infra/migrations create",
+    "migration:create": "node-pg-migrate --migrations-dir infra/migrations create infra-db",
     "migration:up": "node-pg-migrate --migrations-dir infra/migrations --envPath .env.development up"
   },
   "author": "",
