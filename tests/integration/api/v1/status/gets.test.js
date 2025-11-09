@@ -1,62 +1,48 @@
-test("GET to /api/v1/status should return 200", async () => {
-  const response = await fetch("http://localhost:3000/api/v1/status");
+describe("GET /api/v1/status", () => {
+  let response;
+  let responseBody;
 
-  expect(response.status).toBe(200);
-});
+  beforeAll(async () => {
+    response = await fetch("http://localhost:3000/api/v1/status");
+    responseBody = await response.json();
+  });
 
-test("GET to /api/v1/status should return property update_at", async () => {
-  const response = await fetch("http://localhost:3000/api/v1/status");
+  test("should return 200", () => {
+    expect(response.status).toBe(200);
+  });
 
-  const responseBody = await response.json();
+  describe("updated_at", () => {
+    test("should be present", () => {
+      expect(responseBody.updated_at).toBeDefined();
+    });
 
-  expect(responseBody.updated_at).toBeDefined();
-});
+    test("should be a valid ISO date", () => {
+      const parsedDate = new Date(responseBody.updated_at).toISOString();
+      expect(responseBody.updated_at).toEqual(parsedDate);
+    });
+  });
 
-test("GET to /api/v1/status should return property update_at is a date", async () => {
-  const response = await fetch("http://localhost:3000/api/v1/status");
+  describe("dependencies.database", () => {
+    test("should exist", () => {
+      expect(responseBody).toHaveProperty("dependencies");
+      expect(responseBody.dependencies).toHaveProperty("database");
+    });
 
-  const responseBody = await response.json();
+    test("should have numeric version", () => {
+      expect(responseBody.dependencies.database).toHaveProperty("version");
+      expect(typeof responseBody.dependencies.database.version).toBe("number");
+    });
 
-  const parsedUpdatedAt = new Date(responseBody.updated_at).toISOString();
+    test("should have numeric max_connections", () => {
+      expect(responseBody.dependencies.database).toHaveProperty("max_connections");
+      expect(typeof responseBody.dependencies.database.max_connections).toBe("number");
+    });
 
-  expect(responseBody.updated_at).toEqual(parsedUpdatedAt);
-});
-
-test("GET to /api/v1/status should return property database", async () => {
-  const response = await fetch("http://localhost:3000/api/v1/status");
-
-  const responseBody = await response.json();
-  expect(responseBody).toHaveProperty("dependencies");
-  expect(responseBody.dependencies).toHaveProperty("database");
-});
-
-test("GET to /api/v1/status should return property database.version", async () => {
-  const response = await fetch("http://localhost:3000/api/v1/status");
-
-  const { dependencies } = await response.json();
-
-  expect(dependencies.database).toHaveProperty("version");
-  expect(typeof dependencies.database.version).toBe("number");
-});
-
-test("GET to /api/v1/status should return property database.max_connections", async () => {
-  const response = await fetch("http://localhost:3000/api/v1/status");
-
-  const { dependencies } = await response.json();
-
-  expect(dependencies.database).toHaveProperty("max_connections");
-  expect(typeof dependencies.database.max_connections).toBe("number");
-});
-
-test("GET to /api/v1/status should return property database.count_connections", async () => {
-  const response = await fetch("http://localhost:3000/api/v1/status");
-
-  const { dependencies } = await response.json();
-
-  expect(dependencies.database).toHaveProperty("count_connections");
-  expect(typeof dependencies.database.count_connections).toBe("number");
-  expect(dependencies.database.count_connections).toBe(1);
-  expect(dependencies.database.count_connections).toBeLessThanOrEqual(
-    dependencies.database.max_connections,
-  );
+    test("should have count_connections equal to 1 and <= max_connections", () => {
+      const { count_connections, max_connections } = responseBody.dependencies.database;
+      expect(typeof count_connections).toBe("number");
+      expect(count_connections).toBe(1);
+      expect(count_connections).toBeLessThanOrEqual(max_connections);
+    });
+  });
 });
