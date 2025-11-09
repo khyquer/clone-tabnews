@@ -60,3 +60,11 @@ test("GET to /api/v1/status should return property database.count_connections", 
     dependencies.database.max_connections,
   );
 });
+
+test("GET to /api/v1/status should return property applications", async () => {
+  const response = await fetch("http://localhost:3000/api/v1/status");
+
+  const { dependencies } = await response.json();
+
+  expect(dependencies).toHaveProperty("applications");
+});
