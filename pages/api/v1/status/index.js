@@ -1,6 +1,11 @@
 import database from "infra/database.js";
 
 async function status(request, response) {
+  if (request.method !== "GET") {
+    return response.status(405).json({
+      error: "Method not allowed",
+    });
+  }
   try {
     const updatedAt = new Date().toISOString();
 

@@ -60,3 +60,23 @@ test("GET to /api/v1/status should return property database.count_connections", 
     dependencies.database.max_connections,
   );
 });
+
+test("GET to /api/v1/status should return Content-Type application/json", async () => {
+  const response = await fetch("http://localhost:3000/api/v1/status");
+
+  expect(response.headers.get("Content-Type")).toContain("application/json");
+});
+
+test("GET to /api/v1/status should return charset utf-8", async () => {
+  const response = await fetch("http://localhost:3000/api/v1/status");
+
+  expect(response.headers.get("Content-Type")).toContain("charset=utf-8");
+});
+
+test("POST to /api/v1/status should return 405", async () => {
+  const response = await fetch("http://localhost:3000/api/v1/status", {
+    method: "POST",
+  });
+
+  expect(response.status).toBe(405);
+});
