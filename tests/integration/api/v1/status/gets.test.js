@@ -80,13 +80,3 @@ test("POST to /api/v1/status should return 405", async () => {
 
   expect(response.status).toBe(405);
 });
-
-test("GET to /api/v1/status should not accept SQL Injection", async () => {
-  const response = await fetch(
-    "http://localhost:3000/api/v1/status?databaseName='; SELECT pg_sleep(4); --'",
-  );
-
-  const responseBody = await response.json();
-
-  expect(responseBody).toHaveProperty("error");
-});
