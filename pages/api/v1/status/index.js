@@ -1,4 +1,11 @@
 import database from "infra/database.js";
+import fs from "fs";
+import path from "path";
+
+// Lê name e version do package.json
+const pkg = JSON.parse(
+  fs.readFileSync(path.join(process.cwd(), "package.json"), "utf-8"),
+);
 
 async function status(request, response) {
   try {
@@ -14,7 +21,6 @@ async function status(request, response) {
     const maxConnectionsDataBaseResult = await database.query(
       "SHOW max_connections;",
     );
-
     const maxConnectionsDataBaseValue = parseInt(
       maxConnectionsDataBaseResult.rows[0].max_connections,
     );
@@ -37,6 +43,14 @@ async function status(request, response) {
           count_connections: rountConnectionsDataBaseValue,
         },
       },
+      // >>> RF-001
+      application: {
+        name: pkg.name,
+        version: pkg.version,
+        uptime_seconds: Math.floor(process.uptime()),
+        environment: process.env.NODE_ENV || "development",
+      },
+      // <<< RF-001
     });
   } catch (error) {
     response.status(500).json({
