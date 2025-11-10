@@ -1,4 +1,34 @@
 import database from "infra/database.js";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
+// Carregar informações do package.json
+const packageJsonPath = join(process.cwd(), "package.json");
+const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf-8"));
+
+// Tempo de início do servidor (calculado na primeira requisição)
+let serverStartTime = null;
+
+function getServerStartTime() {
+  if (!serverStartTime) {
+    serverStartTime = Date.now();
+  }
+  return serverStartTime;
+}
+
+function getUptimeSeconds() {
+  const startTime = getServerStartTime();
+  return Math.floor((Date.now() - startTime) / 1000);
+}
+
+function getApplicationInfo() {
+  return {
+    name: packageJson.name,
+    version: packageJson.version,
+    uptime_seconds: getUptimeSeconds(),
+    environment: process.env.NODE_ENV || "development",
+  };
+}
 
 async function status(request, response) {
   try {
@@ -30,6 +60,7 @@ async function status(request, response) {
 
     response.status(200).json({
       updated_at: updatedAt,
+      application: getApplicationInfo(),
       dependencies: {
         database: {
           version: queryVersionDataBaseValue,

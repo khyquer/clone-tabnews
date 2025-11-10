@@ -60,3 +60,53 @@ test("GET to /api/v1/status should return property database.count_connections", 
     dependencies.database.max_connections,
   );
 });
+
+test("GET to /api/v1/status should return property application", async () => {
+  const response = await fetch("http://localhost:3000/api/v1/status");
+
+  const responseBody = await response.json();
+
+  expect(responseBody).toHaveProperty("application");
+  expect(typeof responseBody.application).toBe("object");
+});
+
+test("GET to /api/v1/status should return property application.name", async () => {
+  const response = await fetch("http://localhost:3000/api/v1/status");
+
+  const { application } = await response.json();
+
+  expect(application).toHaveProperty("name");
+  expect(typeof application.name).toBe("string");
+});
+
+test("GET to /api/v1/status should return property application.version", async () => {
+  const response = await fetch("http://localhost:3000/api/v1/status");
+
+  const { application } = await response.json();
+
+  expect(application).toHaveProperty("version");
+  expect(typeof application.version).toBe("string");
+});
+
+test("GET to /api/v1/status should return property application.uptime_seconds", async () => {
+  const response = await fetch("http://localhost:3000/api/v1/status");
+
+  const { application } = await response.json();
+
+  expect(application).toHaveProperty("uptime_seconds");
+  expect(typeof application.uptime_seconds).toBe("number");
+  expect(application.uptime_seconds).toBeGreaterThanOrEqual(0);
+});
+
+test("GET to /api/v1/status should return property application.environment", async () => {
+  const response = await fetch("http://localhost:3000/api/v1/status");
+
+  const { application } = await response.json();
+
+  expect(application).toHaveProperty("environment");
+  expect(typeof application.environment).toBe("string");
+  // Deve corresponder ao NODE_ENV ou ser 'development' como padrão
+  expect(["development", "production", "test"]).toContain(
+    application.environment,
+  );
+});
